@@ -16,5 +16,10 @@ pipeline {
                             echo "this is a deploy stage "
                           }
                         }
+        stage("scan") {
+                          steps {
+                            echo "this is a scan stage "
+                          }
+                        }
     }
 }
