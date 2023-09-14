@@ -21,5 +21,10 @@ pipeline {
                             echo "this is a scan stage "
                           }
                         }
+          stage("QA") {
+                          steps {
+                            echo "this is a QA stage "
+                          }
+                        }
     }
 }
