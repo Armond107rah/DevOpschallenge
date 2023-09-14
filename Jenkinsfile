@@ -3,7 +3,7 @@ pipeline {
     stages {
         stage("clone") {
           steps {  
-            echo "clone stage copying code from GitHub"
+            echo "this is a changed message"
           }
         }
     }
