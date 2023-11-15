@@ -1,8 +1,8 @@
 #Dockerfile
 FROM python:latest
 
-WORKDIR /app
+WORKDIR /
 
-COPY print.py .
+COPY . /
 
 CMD ["python", "print.py"]

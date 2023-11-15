@@ -1,33 +1,42 @@
 pipeline {
-    agent any 
-    environment {
-        DOCKER_REGISTRY_URL = "https://registry.hub.docker.com/v2/aholman5" // Replace with your Docker registry URL
-        DOCKER_REGISTRY_CREDENTIALS = credentials('docker-cred')  // Set this to your Docker registry credentials ID in Jenkins
-        DOCKER_IMAGE_NAME = "${DOCKER_REGISTRY_URL}/mypy:latest"
-    }
+    agent any
+
     stages {
-        stage("clone") {
-          steps {  
-            echo "this is a changed message"
-          }
-        }
-        stage("build") {
-                  steps {
-                    echo "this is  a build stage"
-                  }
+        stage('Clone from Git') {
+            steps {
+                script {
+                    // Clean workspace before cloning
+                    deleteDir()
+
+                    // Clone the repository
+                    checkout scm
                 }
-                stage("deploy") {
-                          steps {
-                            echo "this is a deploy stage "
-                          }
-                        }
-       
+            }
+        }
+
         stage('Build Docker Image') {
             steps {
                 script {
-                    docker.withRegistry("${DOCKER_REGISTRY_URL}", DOCKER_REGISTRY_CREDENTIALS) {
-                         customImage = docker.build(DOCKER_IMAGE_NAME,"./")
+                    // Build Docker image using the Dockerfile in the repository
+                    sh 'docker build -t aholman5/mypython:latest .'
+                }
+            }
+        }
+
+       
+
+        stage('Push to Docker Hub') {
+            steps {
+                script {
+                    // Log in to Docker Hub
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
+                        sh 'docker login -u $DOCKER_USERNAME -p $DOCKER_PASSWORD'
                     }
+        
+                    // Push the Docker image to Docker Hub
+                    sh 'docker push aholman5/mypython:latest'
+                   // sh 'docker push umair1999/app:1.0'
+
                 }
             }
         }
